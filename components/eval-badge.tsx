@@ -13,7 +13,11 @@ export function EvalBadge({ results }: { results: EvalResults | null }) {
   const ran = new Date(results.ranAt);
   const ranLabel = Number.isNaN(ran.getTime())
     ? null
-    : ran.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    : ran.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
 
   return (
     <div className="rounded-xl border border-line bg-surface px-4 py-3 shadow-card">

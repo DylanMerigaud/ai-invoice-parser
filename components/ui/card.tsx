@@ -9,10 +9,7 @@ export function Card({
 }) {
   return (
     <div
-      className={cn(
-        "rounded-xl bg-surface shadow-card ring-line",
-        className,
-      )}
+      className={cn("rounded-xl bg-surface shadow-card ring-line", className)}
     >
       {children}
     </div>

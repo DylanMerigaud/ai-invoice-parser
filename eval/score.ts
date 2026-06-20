@@ -55,7 +55,10 @@ function normStr(s: string | null | undefined): string {
   return (s ?? "").trim().toLowerCase().replace(/\s+/g, " ");
 }
 
-function moneyEq(a: number | null | undefined, b: number | null | undefined): boolean {
+function moneyEq(
+  a: number | null | undefined,
+  b: number | null | undefined,
+): boolean {
   if (a == null && b == null) return true;
   if (a == null || b == null) return false;
   return Math.abs(a - b) <= MONEY_TOL;
@@ -70,20 +73,30 @@ function fmtMoney(n: number | null | undefined): string {
  * may legitimately reformat whitespace/punctuation; we accept a match if one
  * normalized string contains the other, or they're equal.
  */
-function looseStrEq(a: string | null | undefined, b: string | null | undefined): boolean {
+function looseStrEq(
+  a: string | null | undefined,
+  b: string | null | undefined,
+): boolean {
   const na = normStr(a);
   const nb = normStr(b);
   if (na === nb) return true;
   if (!na || !nb) return false;
   // Address/name reformatting: accept containment either direction.
-  const stripPunct = (x: string) => x.replace(/[.,#\-/]/g, "").replace(/\s+/g, " ").trim();
+  const stripPunct = (x: string) =>
+    x
+      .replace(/[.,#\-/]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
   const sa = stripPunct(na);
   const sb = stripPunct(nb);
   return sa === sb || sa.includes(sb) || sb.includes(sa);
 }
 
 /** Exact equality for codes/identifiers (invoice number, currency, dates). */
-function idEq(a: string | null | undefined, b: string | null | undefined): boolean {
+function idEq(
+  a: string | null | undefined,
+  b: string | null | undefined,
+): boolean {
   return normStr(a).replace(/\s+/g, "") === normStr(b).replace(/\s+/g, "");
 }
 
@@ -115,7 +128,8 @@ function scoreLineItems(
     }
   }
   const frac = matched / expected.length;
-  const countPenalty = got.length === expected.length ? "" : ` (got ${got.length})`;
+  const countPenalty =
+    got.length === expected.length ? "" : ` (got ${got.length})`;
   return {
     correct: frac >= 0.999 && got.length === expected.length,
     detail: `${matched}/${expected.length}${countPenalty}`,
@@ -137,13 +151,20 @@ export function scoreInvoice(
   ) => fields.push({ field, correct, expected: exp, got: g });
 
   // Free-text
-  push("vendor.name", looseStrEq(expected.vendor.name, got.vendor.name), expected.vendor.name, got.vendor.name);
+  push(
+    "vendor.name",
+    looseStrEq(expected.vendor.name, got.vendor.name),
+    expected.vendor.name,
+    got.vendor.name,
+  );
 
   // Optional strings: if truth is absent, applicable only if model invented one.
   const addrApplicable = expected.vendor.address != null;
   push(
     "vendor.address",
-    addrApplicable ? looseStrEq(expected.vendor.address, got.vendor.address) : null,
+    addrApplicable
+      ? looseStrEq(expected.vendor.address, got.vendor.address)
+      : null,
     expected.vendor.address ?? "—",
     got.vendor.address ?? "—",
   );
@@ -156,8 +177,18 @@ export function scoreInvoice(
   );
 
   // Identifiers / dates (exact)
-  push("invoiceNumber", idEq(expected.invoiceNumber, got.invoiceNumber), expected.invoiceNumber, got.invoiceNumber);
-  push("issueDate", idEq(expected.issueDate, got.issueDate), expected.issueDate, got.issueDate);
+  push(
+    "invoiceNumber",
+    idEq(expected.invoiceNumber, got.invoiceNumber),
+    expected.invoiceNumber,
+    got.invoiceNumber,
+  );
+  push(
+    "issueDate",
+    idEq(expected.issueDate, got.issueDate),
+    expected.issueDate,
+    got.issueDate,
+  );
   const dueApplicable = expected.dueDate != null;
   push(
     "dueDate",
@@ -165,10 +196,20 @@ export function scoreInvoice(
     expected.dueDate ?? "—",
     got.dueDate ?? "—",
   );
-  push("currency", idEq(expected.currency, got.currency), expected.currency, got.currency);
+  push(
+    "currency",
+    idEq(expected.currency, got.currency),
+    expected.currency,
+    got.currency,
+  );
 
   // Money
-  push("subtotal", moneyEq(expected.subtotal, got.subtotal), fmtMoney(expected.subtotal), fmtMoney(got.subtotal));
+  push(
+    "subtotal",
+    moneyEq(expected.subtotal, got.subtotal),
+    fmtMoney(expected.subtotal),
+    fmtMoney(got.subtotal),
+  );
   const taxAmtApplicable = expected.tax != null;
   push(
     "tax",
@@ -176,11 +217,21 @@ export function scoreInvoice(
     fmtMoney(expected.tax),
     fmtMoney(got.tax),
   );
-  push("total", moneyEq(expected.total, got.total), fmtMoney(expected.total), fmtMoney(got.total));
+  push(
+    "total",
+    moneyEq(expected.total, got.total),
+    fmtMoney(expected.total),
+    fmtMoney(got.total),
+  );
 
   // Line items
   const li = scoreLineItems(expected.lineItems, got.lineItems);
-  push("lineItems", li.correct, `${expected.lineItems.length} items`, li.detail);
+  push(
+    "lineItems",
+    li.correct,
+    `${expected.lineItems.length} items`,
+    li.detail,
+  );
 
   const applicable = fields.filter((f) => f.correct !== null);
   const correct = applicable.filter((f) => f.correct === true).length;
@@ -222,6 +273,9 @@ export function aggregateAnomalies(scores: SampleScore[]): {
   const fn = scores.reduce((a, s) => a + s.anomaly.falseNegatives, 0);
   const precision = tp + fp === 0 ? 1 : tp / (tp + fp);
   const recall = tp + fn === 0 ? 1 : tp / (tp + fn);
-  const f1 = precision + recall === 0 ? 0 : (2 * precision * recall) / (precision + recall);
+  const f1 =
+    precision + recall === 0
+      ? 0
+      : (2 * precision * recall) / (precision + recall);
   return { precision, recall, f1, tp, fp, fn };
 }

@@ -101,7 +101,10 @@ const LABELS: Record<Locale, Labels> = {
 function fmt(n: number, style: RenderStyle): string {
   const fixed = n.toFixed(2);
   const [intPart, dec] = fixed.split(".");
-  const grouped = intPart!.replace(/\B(?=(\d{3})+(?!\d))/g, style.numberFormat === "eu" ? "." : ",");
+  const grouped = intPart!.replace(
+    /\B(?=(\d{3})+(?!\d))/g,
+    style.numberFormat === "eu" ? "." : ",",
+  );
   const sep = style.numberFormat === "eu" ? "," : ".";
   return `${grouped}${sep}${dec}`;
 }
@@ -175,7 +178,12 @@ function hasHebrew(s: string): boolean {
  * shekel as the text "ILS" rather than the ₪ glyph, which WinAnsi can't encode,
  * to avoid mixed-font runs within one string).
  */
-function fontFor(s: string, latin: PDFFont, fonts: Fonts, bold: boolean): PDFFont {
+function fontFor(
+  s: string,
+  latin: PDFFont,
+  fonts: Fonts,
+  bold: boolean,
+): PDFFont {
   if (hasHebrew(s) && fonts.hebRegular && fonts.hebBold) {
     return bold ? fonts.hebBold : fonts.hebRegular;
   }
@@ -231,8 +239,12 @@ export async function renderInvoicePdf(
   const accent = rgb(...(style.accent ?? [0.31, 0.27, 0.9]));
 
   // Color palette: a "scanned" doc is washed-out grayscale.
-  const inkColor = style.scanned ? rgb(0.25, 0.25, 0.27) : rgb(0.07, 0.07, 0.09);
-  const mutedColor = style.scanned ? rgb(0.45, 0.45, 0.47) : rgb(0.42, 0.42, 0.47);
+  const inkColor = style.scanned
+    ? rgb(0.25, 0.25, 0.27)
+    : rgb(0.07, 0.07, 0.09);
+  const mutedColor = style.scanned
+    ? rgb(0.45, 0.45, 0.47)
+    : rgb(0.42, 0.42, 0.47);
   const lineColor = rgb(0.85, 0.85, 0.87);
 
   // How many line items fit per page (first page has the header, so fewer).
@@ -343,10 +355,30 @@ function drawHeader(
   const { fonts, accent, inkColor, mutedColor, labels } = ctx;
 
   // Accent band title.
-  drawT(page, labels.invoice, MARGIN, y - 22, 26, fonts.bold, fonts, accent, true);
+  drawT(
+    page,
+    labels.invoice,
+    MARGIN,
+    y - 22,
+    26,
+    fonts.bold,
+    fonts,
+    accent,
+    true,
+  );
 
   // Vendor name (right-aligned, top right).
-  drawTRight(page, invoice.vendor.name, PAGE_W - MARGIN, y - 6, 13, fonts.bold, fonts, inkColor, true);
+  drawTRight(
+    page,
+    invoice.vendor.name,
+    PAGE_W - MARGIN,
+    y - 6,
+    13,
+    fonts.bold,
+    fonts,
+    inkColor,
+    true,
+  );
   if (invoice.vendor.address) {
     drawWrapped(page, invoice.vendor.address, {
       x: PAGE_W - MARGIN - 200,
@@ -376,7 +408,17 @@ function drawParties(
   const metaX = 360;
   let my = y;
   const metaRow = (label: string, value: string) => {
-    drawT(page, label.toUpperCase(), metaX, my, 7.5, fonts.bold, fonts, mutedColor, true);
+    drawT(
+      page,
+      label.toUpperCase(),
+      metaX,
+      my,
+      7.5,
+      fonts.bold,
+      fonts,
+      mutedColor,
+      true,
+    );
     // Values (invoice no, dates) are Latin and stay in the Latin font.
     drawT(page, value, metaX, my - 11, 10, fonts.regular, fonts, inkColor);
     my -= 28;
@@ -424,19 +466,59 @@ function drawContinuationHeader(
   y: number,
 ): number {
   const { fonts, mutedColor, labels } = ctx;
-  page.drawText(
-    `${labels.invoice} ${invoice.invoiceNumber} (cont.)`,
-    { x: MARGIN, y: y - 10, size: 11, font: fonts.bold, color: mutedColor },
-  );
+  page.drawText(`${labels.invoice} ${invoice.invoiceNumber} (cont.)`, {
+    x: MARGIN,
+    y: y - 10,
+    size: 11,
+    font: fonts.bold,
+    color: mutedColor,
+  });
   return y - 34;
 }
 
 function drawTableHeader(ctx: DrawCtx, page: PDFPage, y: number): number {
   const { fonts, mutedColor, lineColor, labels } = ctx;
-  drawT(page, labels.description, COL_DESC, y, 8, fonts.bold, fonts, mutedColor, true);
-  drawRight(page, labels.qty, COL_QTY + 30, y, 8, fonts.bold, mutedColor, fonts);
-  drawRight(page, labels.unitPrice, COL_UNIT + 60, y, 8, fonts.bold, mutedColor, fonts);
-  drawRight(page, labels.amount, COL_AMT_RIGHT, y, 8, fonts.bold, mutedColor, fonts);
+  drawT(
+    page,
+    labels.description,
+    COL_DESC,
+    y,
+    8,
+    fonts.bold,
+    fonts,
+    mutedColor,
+    true,
+  );
+  drawRight(
+    page,
+    labels.qty,
+    COL_QTY + 30,
+    y,
+    8,
+    fonts.bold,
+    mutedColor,
+    fonts,
+  );
+  drawRight(
+    page,
+    labels.unitPrice,
+    COL_UNIT + 60,
+    y,
+    8,
+    fonts.bold,
+    mutedColor,
+    fonts,
+  );
+  drawRight(
+    page,
+    labels.amount,
+    COL_AMT_RIGHT,
+    y,
+    8,
+    fonts.bold,
+    mutedColor,
+    fonts,
+  );
   const ruleY = y - 6;
   page.drawLine({
     start: { x: MARGIN, y: ruleY },
@@ -456,10 +538,46 @@ function drawRows(
   const { fonts, inkColor, mutedColor, lineColor, style } = ctx;
   let cy = y;
   for (const li of rows) {
-    drawT(page, li.description, COL_DESC, cy, 9.5, fonts.regular, fonts, inkColor);
-    drawRight(page, fmt(li.qty, { ...style, numberFormat: "us" }).replace(/\.00$/, ""), COL_QTY + 30, cy, 9.5, fonts.regular, mutedColor, fonts);
-    drawRight(page, money(li.unitPrice, style), COL_UNIT + 60, cy, 9.5, fonts.regular, mutedColor, fonts);
-    drawRight(page, money(li.amount, style), COL_AMT_RIGHT, cy, 9.5, fonts.regular, inkColor, fonts);
+    drawT(
+      page,
+      li.description,
+      COL_DESC,
+      cy,
+      9.5,
+      fonts.regular,
+      fonts,
+      inkColor,
+    );
+    drawRight(
+      page,
+      fmt(li.qty, { ...style, numberFormat: "us" }).replace(/\.00$/, ""),
+      COL_QTY + 30,
+      cy,
+      9.5,
+      fonts.regular,
+      mutedColor,
+      fonts,
+    );
+    drawRight(
+      page,
+      money(li.unitPrice, style),
+      COL_UNIT + 60,
+      cy,
+      9.5,
+      fonts.regular,
+      mutedColor,
+      fonts,
+    );
+    drawRight(
+      page,
+      money(li.amount, style),
+      COL_AMT_RIGHT,
+      cy,
+      9.5,
+      fonts.regular,
+      inkColor,
+      fonts,
+    );
     cy -= 14;
     page.drawLine({
       start: { x: MARGIN, y: cy + 4 },
@@ -484,10 +602,28 @@ function drawTotals(
   const labelRight = COL_UNIT + 60;
 
   const row = (label: string, value: string, bold = false) => {
-    drawRight(page, label, labelRight, ty, bold ? 11 : 9.5, bold ? fonts.bold : fonts.regular, bold ? inkColor : mutedColor, fonts);
+    drawRight(
+      page,
+      label,
+      labelRight,
+      ty,
+      bold ? 11 : 9.5,
+      bold ? fonts.bold : fonts.regular,
+      bold ? inkColor : mutedColor,
+      fonts,
+    );
     // Values are amounts; pass `fonts` so a shekel sign (₪) routes to the
     // Unicode font (Latin-only amounts still render in the Latin font).
-    drawRight(page, value, COL_AMT_RIGHT, ty, bold ? 12 : 9.5, bold ? fonts.bold : fonts.regular, inkColor, fonts);
+    drawRight(
+      page,
+      value,
+      COL_AMT_RIGHT,
+      ty,
+      bold ? 12 : 9.5,
+      bold ? fonts.bold : fonts.regular,
+      inkColor,
+      fonts,
+    );
     ty -= bold ? 20 : 16;
   };
 
@@ -524,7 +660,13 @@ function drawSpeckles(page: PDFPage, seed: number): void {
     const y = rand() * PAGE_H;
     const r = 0.2 + rand() * 0.6;
     const g = 0.55 + rand() * 0.25;
-    page.drawCircle({ x, y, size: r, color: rgb(g, g, g - 0.05), opacity: 0.35 });
+    page.drawCircle({
+      x,
+      y,
+      size: r,
+      color: rgb(g, g, g - 0.05),
+      opacity: 0.35,
+    });
   }
 }
 
@@ -565,12 +707,26 @@ function drawWrapped(
 
   let cy = opts.y;
   for (const line of lines) {
-    const font = opts.fonts ? fontFor(line, opts.font, opts.fonts, false) : opts.font;
+    const font = opts.fonts
+      ? fontFor(line, opts.font, opts.fonts, false)
+      : opts.font;
     if (opts.align === "right") {
       const w = font.widthOfTextAtSize(line, opts.size);
-      page.drawText(line, { x: opts.x + opts.width - w, y: cy, size: opts.size, font, color: opts.color });
+      page.drawText(line, {
+        x: opts.x + opts.width - w,
+        y: cy,
+        size: opts.size,
+        font,
+        color: opts.color,
+      });
     } else {
-      page.drawText(line, { x: opts.x, y: cy, size: opts.size, font, color: opts.color });
+      page.drawText(line, {
+        x: opts.x,
+        y: cy,
+        size: opts.size,
+        font,
+        color: opts.color,
+      });
     }
     cy -= opts.lineHeight;
   }

@@ -146,7 +146,9 @@ export function Dropzone({
                 disabled={disabled}
                 onClick={() => onSample(s)}
                 onMouseEnter={() => setPreview(s)}
-                onMouseLeave={() => setPreview((p) => (p?.id === s.id ? null : p))}
+                onMouseLeave={() =>
+                  setPreview((p) => (p?.id === s.id ? null : p))
+                }
                 onFocus={() => setPreview(s)}
                 onBlur={() => setPreview((p) => (p?.id === s.id ? null : p))}
                 className="rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm font-medium text-ink transition-colors hover:border-accent/50 hover:bg-accent-soft hover:text-accent disabled:pointer-events-none disabled:opacity-60"

@@ -136,5 +136,8 @@ test("errors are sorted before warnings", () => {
   const fired = detectAnomalies(inv);
   const firstWarningIdx = fired.findIndex((a) => a.severity === "warning");
   const lastErrorIdx = fired.map((a) => a.severity).lastIndexOf("error");
-  assert.ok(lastErrorIdx < firstWarningIdx, "all errors should precede warnings");
+  assert.ok(
+    lastErrorIdx < firstWarningIdx,
+    "all errors should precede warnings",
+  );
 });

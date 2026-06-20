@@ -23,7 +23,12 @@ export interface EvalResults {
     fn: number;
   };
   /** Per-field accuracy, for an optional detailed view. */
-  perField: Array<{ field: ScoredField; accuracy: number; correct: number; total: number }>;
+  perField: Array<{
+    field: ScoredField;
+    accuracy: number;
+    correct: number;
+    total: number;
+  }>;
 }
 
 /**
@@ -36,7 +41,10 @@ export async function loadEvalResults(): Promise<EvalResults | null> {
   const { readFile } = await import("node:fs/promises");
   const { join } = await import("node:path");
   try {
-    const raw = await readFile(join(process.cwd(), "eval", "results.json"), "utf8");
+    const raw = await readFile(
+      join(process.cwd(), "eval", "results.json"),
+      "utf8",
+    );
     return JSON.parse(raw) as EvalResults;
   } catch {
     return null;

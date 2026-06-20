@@ -27,7 +27,10 @@ const IsoDate = z
   .string()
   .trim()
   .regex(/^\d{4}-\d{2}-\d{2}$/, "date must be ISO-8601 (YYYY-MM-DD)")
-  .refine((s) => !Number.isNaN(Date.parse(s)), "date is not a valid calendar date");
+  .refine(
+    (s) => !Number.isNaN(Date.parse(s)),
+    "date is not a valid calendar date",
+  );
 
 // Monetary / numeric amounts. The model is instructed to return plain numbers,
 // but we coerce defensively in case a numeric string slips through.
@@ -59,9 +62,7 @@ export const InvoiceSchema = z
     issueDate: IsoDate,
     dueDate: IsoDate.nullish(),
     currency: Currency,
-    lineItems: z
-      .array(LineItem)
-      .min(1, "at least one line item is required"),
+    lineItems: z.array(LineItem).min(1, "at least one line item is required"),
     subtotal: Amount,
     tax: Amount.nullish(),
     total: Amount,

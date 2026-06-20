@@ -28,8 +28,7 @@ function getLimiter(): Ratelimit | null {
   //   • Upstash directly  → UPSTASH_REDIS_REST_URL / _TOKEN
   //   • Vercel Marketplace → KV_REST_API_URL / _TOKEN (Vercel's Upstash add-on,
   //     which keeps the legacy "KV" prefix)
-  const url =
-    process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
+  const url = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
   const token =
     process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
 

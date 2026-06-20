@@ -17,12 +17,7 @@ export function Field({
       <dt className="text-[11px] font-medium uppercase tracking-wide text-muted">
         {label}
       </dt>
-      <dd
-        className={cn(
-          "text-sm text-ink",
-          mono && "font-mono text-[13px]",
-        )}
-      >
+      <dd className={cn("text-sm text-ink", mono && "font-mono text-[13px]")}>
         {value || <span className="text-muted">—</span>}
       </dd>
     </div>

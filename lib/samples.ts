@@ -14,9 +14,11 @@ const LANDING: ReadonlyArray<{ id: string; label: string }> = [
   { id: "non-english-he", label: "Hebrew (RTL)" },
 ];
 
-export const LANDING_SAMPLES: SampleInvoice[] = LANDING.map(({ id, label }) => ({
-  id,
-  label,
-  file: `/samples/${id}.pdf`,
-  preview: `/samples/previews/${id}.png`,
-}));
+export const LANDING_SAMPLES: SampleInvoice[] = LANDING.map(
+  ({ id, label }) => ({
+    id,
+    label,
+    file: `/samples/${id}.pdf`,
+    preview: `/samples/previews/${id}.png`,
+  }),
+);

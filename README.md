@@ -84,7 +84,7 @@ eval/   (standalone — runs the SAME extract + detect pipeline)
 
 Next.js 15 (App Router) · TypeScript (strict, `noUncheckedIndexedAccess`) · Tailwind · `@anthropic-ai/sdk` (`claude-sonnet-4-6`) · Zod + `zod-to-json-schema` · `@upstash/ratelimit` + `@upstash/redis` · `pdf-lib` + `@pdf-lib/fontkit` (sample generation, incl. an embedded Hebrew font for the RTL sample) · `tsx` (eval runner + tests).
 
-The pure logic is unit-tested with Node's built-in test runner (no extra deps): `pnpm test` — 56 tests covering the Zod schema (what's accepted vs rejected), the anomaly detectors, the defensive JSON extraction, the display formatters, and the eval scorer. `pnpm typecheck` runs `tsc --noEmit` under strict mode (`noUnusedLocals` / `noUnusedParameters` catch dead code *within* a file), and `pnpm knip` catches dead code *across* the project — unused exports, files, and dependencies. Three cheap gates, no ESLint config to babysit.
+The pure logic is unit-tested with Node's built-in test runner (no extra deps): `pnpm test` — 56 tests covering the Zod schema (what's accepted vs rejected), the anomaly detectors, the defensive JSON extraction, the display formatters, and the eval scorer. `pnpm typecheck` runs `tsc --noEmit` under strict mode (`noUnusedLocals` / `noUnusedParameters` catch dead code *within* a file), and `pnpm knip` catches dead code *across* the project — unused exports, files, and dependencies.
 
 ---
 

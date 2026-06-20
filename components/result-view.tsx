@@ -53,11 +53,7 @@ export function ResultView({
             <dl className="flex flex-col gap-3">
               <Field label="Name" value={invoice.vendor.name} />
               <Field label="Address" value={invoice.vendor.address ?? null} />
-              <Field
-                label="Tax ID"
-                value={invoice.vendor.taxId ?? null}
-                mono
-              />
+              <Field label="Tax ID" value={invoice.vendor.taxId ?? null} mono />
             </dl>
           </CardBody>
         </Card>
@@ -163,9 +159,7 @@ function TotalRow({
     <div className="flex items-center justify-between">
       <dt
         className={
-          emphasize
-            ? "text-sm font-semibold text-ink"
-            : "text-sm text-muted"
+          emphasize ? "text-sm font-semibold text-ink" : "text-sm text-muted"
         }
       >
         {label}

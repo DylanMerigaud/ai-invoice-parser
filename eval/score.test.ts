@@ -1,6 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { scoreInvoice, scoreAnomalies, aggregateAnomalies, type SampleScore } from "./score";
+import {
+  scoreInvoice,
+  scoreAnomalies,
+  aggregateAnomalies,
+  type SampleScore,
+} from "./score";
 import type { Invoice } from "@/lib/schema";
 import type { AnomalyCode } from "@/lib/anomalies";
 
@@ -42,7 +47,9 @@ test("address matches across punctuation / whitespace / case differences", () =>
   const got = inv();
   // Same words, different punctuation + case + spacing → should still match.
   got.vendor.address = "1 a st,  townsville";
-  const addr = scoreInvoice(inv(), got).fields.find((f) => f.field === "vendor.address");
+  const addr = scoreInvoice(inv(), got).fields.find(
+    (f) => f.field === "vendor.address",
+  );
   assert.equal(addr?.correct, true);
 });
 
@@ -52,7 +59,9 @@ test("address scorer does NOT accept abbreviation rewrites (conservative by desi
   // materially-different address — keeps eval numbers honest.
   const got = inv();
   got.vendor.address = "1 A Street, Townsville";
-  const addr = scoreInvoice(inv(), got).fields.find((f) => f.field === "vendor.address");
+  const addr = scoreInvoice(inv(), got).fields.find(
+    (f) => f.field === "vendor.address",
+  );
   assert.equal(addr?.correct, false);
 });
 
@@ -66,11 +75,17 @@ test("wrong invoice number is exact-matched and fails", () => {
 test("money within 2 cents passes; beyond fails", () => {
   const near = inv();
   near.total = 10.81; // 1 cent off
-  assert.equal(scoreInvoice(inv(), near).fields.find((f) => f.field === "total")?.correct, true);
+  assert.equal(
+    scoreInvoice(inv(), near).fields.find((f) => f.field === "total")?.correct,
+    true,
+  );
 
   const far = inv();
   far.total = 11.5;
-  assert.equal(scoreInvoice(inv(), far).fields.find((f) => f.field === "total")?.correct, false);
+  assert.equal(
+    scoreInvoice(inv(), far).fields.find((f) => f.field === "total")?.correct,
+    false,
+  );
 });
 
 test("optional field absent in truth is not counted (correct === null)", () => {
@@ -85,7 +100,9 @@ test("optional field absent in truth is not counted (correct === null)", () => {
 test("line items: a wrong amount drops the match", () => {
   const got = inv();
   got.lineItems = [{ description: "Thing", qty: 1, unitPrice: 10, amount: 99 }];
-  const li = scoreInvoice(inv(), got).fields.find((f) => f.field === "lineItems");
+  const li = scoreInvoice(inv(), got).fields.find(
+    (f) => f.field === "lineItems",
+  );
   assert.equal(li?.correct, false);
 });
 
@@ -95,7 +112,9 @@ test("line items: extra row fails the count check", () => {
     { description: "Thing", qty: 1, unitPrice: 10, amount: 10 },
     { description: "Extra", qty: 1, unitPrice: 5, amount: 5 },
   ];
-  const li = scoreInvoice(inv(), got).fields.find((f) => f.field === "lineItems");
+  const li = scoreInvoice(inv(), got).fields.find(
+    (f) => f.field === "lineItems",
+  );
   assert.equal(li?.correct, false);
 });
 
@@ -126,9 +145,27 @@ test("aggregateAnomalies: empty expected & got is perfect (precision/recall = 1)
 
 test("aggregateAnomalies: a miss drops recall, a false alarm drops precision", () => {
   const scores: SampleScore[] = [
-    { id: "a", stresses: "", fields: [], fieldAccuracy: 1, anomaly: scoreAnomalies(["totals_mismatch"], []) }, // fn
-    { id: "b", stresses: "", fields: [], fieldAccuracy: 1, anomaly: scoreAnomalies([], ["duplicate_line_items"]) }, // fp
-    { id: "c", stresses: "", fields: [], fieldAccuracy: 1, anomaly: scoreAnomalies(["due_before_issue"], ["due_before_issue"]) }, // tp
+    {
+      id: "a",
+      stresses: "",
+      fields: [],
+      fieldAccuracy: 1,
+      anomaly: scoreAnomalies(["totals_mismatch"], []),
+    }, // fn
+    {
+      id: "b",
+      stresses: "",
+      fields: [],
+      fieldAccuracy: 1,
+      anomaly: scoreAnomalies([], ["duplicate_line_items"]),
+    }, // fp
+    {
+      id: "c",
+      stresses: "",
+      fields: [],
+      fieldAccuracy: 1,
+      anomaly: scoreAnomalies(["due_before_issue"], ["due_before_issue"]),
+    }, // tp
   ];
   const agg = aggregateAnomalies(scores);
   assert.equal(agg.tp, 1);

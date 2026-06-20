@@ -71,9 +71,8 @@ function Footer() {
             </span>
           </div>
           <span>
-            Built by{" "}
-            <span className="font-medium text-ink/70">{AUTHOR}</span> — available
-            for AI / fintech work.
+            Built by <span className="font-medium text-ink/70">{AUTHOR}</span> —
+            available for AI / fintech work.
           </span>
         </div>
         <SocialLinks />

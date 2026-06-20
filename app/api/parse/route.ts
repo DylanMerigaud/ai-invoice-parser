@@ -24,7 +24,9 @@ function err(
   );
 }
 
-export async function POST(request: Request): Promise<NextResponse<ParseResponse>> {
+export async function POST(
+  request: Request,
+): Promise<NextResponse<ParseResponse>> {
   const startedAt = Date.now();
 
   // 1. Rate-limit by IP first — before doing any work or calling the model.
@@ -48,7 +50,10 @@ export async function POST(request: Request): Promise<NextResponse<ParseResponse
   //    just avoids reading a large body into memory when we can see it coming.
   //    (Multipart framing adds overhead, so allow a little slack over MAX_BYTES.)
   const contentLength = Number(request.headers.get("content-length"));
-  if (Number.isFinite(contentLength) && contentLength > MAX_BYTES + 1024 * 1024) {
+  if (
+    Number.isFinite(contentLength) &&
+    contentLength > MAX_BYTES + 1024 * 1024
+  ) {
     return err(
       "bad_request",
       `That upload is ${(contentLength / 1024 / 1024).toFixed(1)} MB. The limit is 10 MB.`,
@@ -69,7 +74,11 @@ export async function POST(request: Request): Promise<NextResponse<ParseResponse
   }
 
   if (!file) {
-    return err("bad_request", "No file was uploaded. Attach a PDF invoice.", 400);
+    return err(
+      "bad_request",
+      "No file was uploaded. Attach a PDF invoice.",
+      400,
+    );
   }
 
   // 4. Validate the upload: size, then real PDF magic bytes (don't trust the
@@ -146,7 +155,11 @@ export async function POST(request: Request): Promise<NextResponse<ParseResponse
 /** Friendly response for accidental GETs. */
 export function GET(): NextResponse {
   return NextResponse.json(
-    { ok: false, code: "bad_request", message: "POST a PDF as multipart/form-data to this endpoint." },
+    {
+      ok: false,
+      code: "bad_request",
+      message: "POST a PDF as multipart/form-data to this endpoint.",
+    },
     { status: 405 },
   );
 }

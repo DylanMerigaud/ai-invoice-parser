@@ -22,7 +22,7 @@ test("unwraps a ```json fenced block", () => {
 });
 
 test("unwraps a bare ``` fenced block (no language)", () => {
-  assert.deepEqual(extractJsonObject("```\n{\"a\":1}\n```"), { a: 1 });
+  assert.deepEqual(extractJsonObject('```\n{"a":1}\n```'), { a: 1 });
 });
 
 test("slices a JSON object out of surrounding prose", () => {

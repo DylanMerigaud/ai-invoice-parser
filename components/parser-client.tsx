@@ -88,9 +88,8 @@ function LoadingState({ label }: { label: string }) {
         <span className="text-sm font-medium text-ink">{label}</span>
       </div>
       <p className="max-w-sm text-center text-xs text-muted">
-        Sending the PDF to{" "}
-        <span className="font-mono">claude-sonnet-4-6</span>, validating the
-        response against the schema, and running anomaly checks.
+        Sending the PDF to <span className="font-mono">claude-sonnet-4-6</span>,
+        validating the response against the schema, and running anomaly checks.
       </p>
     </div>
   );

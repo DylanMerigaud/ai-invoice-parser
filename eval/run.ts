@@ -78,7 +78,10 @@ async function discoverSamples(filter: string[]): Promise<string[]> {
 
 async function runSample(id: string, dryRun: boolean): Promise<SampleScore> {
   const pdf = await readFile(join(SAMPLES_DIR, `${id}.pdf`));
-  const expectedRaw = await readFile(join(SAMPLES_DIR, `${id}.expected.json`), "utf8");
+  const expectedRaw = await readFile(
+    join(SAMPLES_DIR, `${id}.expected.json`),
+    "utf8",
+  );
   const truth = JSON.parse(expectedRaw) as ExpectedFile;
 
   // Validate our own ground truth against the schema (catches corpus drift).
@@ -98,7 +101,11 @@ async function runSample(id: string, dryRun: boolean): Promise<SampleScore> {
   // exercises the whole scoring + reporting pipeline (and the corpus) without
   // spending API credits — a perfect run is the expected output.
   const result = dryRun
-    ? ({ ok: true, invoice: truth.expected, usage: { input: 0, output: 0 } } as const)
+    ? ({
+        ok: true,
+        invoice: truth.expected,
+        usage: { input: 0, output: 0 },
+      } as const)
     : await extractInvoice(pdf.toString("base64"));
   if (!result.ok) {
     const reason =
@@ -147,9 +154,7 @@ function printPerSampleTable(scores: SampleScore[]) {
   console.log(c(C.bold, "\nPer-sample results\n"));
   const idW = Math.max(12, ...scores.map((s) => s.id.length));
   const header =
-    "  " +
-    "sample".padEnd(idW) +
-    "  fields  anomalies            notes";
+    "  " + "sample".padEnd(idW) + "  fields  anomalies            notes";
   console.log(c(C.gray, header));
   console.log(c(C.gray, "  " + "─".repeat(idW + 40)));
 
@@ -157,11 +162,21 @@ function printPerSampleTable(scores: SampleScore[]) {
     const idCell = s.id.padEnd(idW);
     if (s.failed) {
       console.log(
-        "  " + idCell + "  " + c(C.red, "FAIL".padStart(6)) + "  " + " ".repeat(20) + c(C.red, s.failed),
+        "  " +
+          idCell +
+          "  " +
+          c(C.red, "FAIL".padStart(6)) +
+          "  " +
+          " ".repeat(20) +
+          c(C.red, s.failed),
       );
       continue;
     }
-    const { truePositives: tp, falsePositives: fp, falseNegatives: fn } = s.anomaly;
+    const {
+      truePositives: tp,
+      falsePositives: fp,
+      falseNegatives: fn,
+    } = s.anomaly;
     const anomalyCell =
       tp + fp + fn === 0
         ? c(C.green, "—   ".padEnd(20))
@@ -257,8 +272,14 @@ function printSummary(scores: SampleScore[]) {
     console.log("  " + label.padEnd(34) + value);
 
   row("Model", c(C.cyan, MODEL));
-  row("Samples run", `${ran.length}${failedCount ? c(C.red, ` (+${failedCount} failed)`) : ""}`);
-  row("Field accuracy (micro)", colorPct(microFieldAcc) + c(C.gray, `  ${correct}/${applicable} fields`));
+  row(
+    "Samples run",
+    `${ran.length}${failedCount ? c(C.red, ` (+${failedCount} failed)`) : ""}`,
+  );
+  row(
+    "Field accuracy (micro)",
+    colorPct(microFieldAcc) + c(C.gray, `  ${correct}/${applicable} fields`),
+  );
   row("Field accuracy (per-sample mean)", colorPct(meanFieldAcc));
   row(
     "Anomaly precision",
@@ -318,7 +339,9 @@ async function writeResults(scores: SampleScore[]): Promise<void> {
     join(HERE, "results.json"),
     JSON.stringify(results, null, 2) + "\n",
   );
-  console.log(c(C.gray, `  wrote eval/results.json (drives the landing-page badge)\n`));
+  console.log(
+    c(C.gray, `  wrote eval/results.json (drives the landing-page badge)\n`),
+  );
 }
 
 async function main() {
@@ -332,7 +355,10 @@ async function main() {
     console.error(
       c(C.red, "ANTHROPIC_API_KEY is not set.") +
         " Add it to .env.local (see .env.example), then re-run `pnpm eval`." +
-        c(C.gray, "\n(Tip: `pnpm eval --dry-run` validates the harness without calling the API.)"),
+        c(
+          C.gray,
+          "\n(Tip: `pnpm eval --dry-run` validates the harness without calling the API.)",
+        ),
     );
     process.exit(1);
   }
@@ -348,8 +374,13 @@ async function main() {
 
   console.log(
     c(C.bold, `\nAI Invoice Parser — eval`) +
-      c(C.gray, `  (${ids.length} sample${ids.length === 1 ? "" : "s"}, model ${MODEL})`) +
-      (dryRun ? c(C.yellow, "  [dry-run: scoring ground truth, no API calls]") : ""),
+      c(
+        C.gray,
+        `  (${ids.length} sample${ids.length === 1 ? "" : "s"}, model ${MODEL})`,
+      ) +
+      (dryRun
+        ? c(C.yellow, "  [dry-run: scoring ground truth, no API calls]")
+        : ""),
   );
   console.log(
     c(
@@ -371,7 +402,8 @@ async function main() {
       process.stdout.write(c(C.red, `fail (${dt}ms)\n`));
     } else {
       process.stdout.write(
-        c(C.green, `ok`) + c(C.gray, ` (${pct(score.fieldAccuracy)} fields, ${dt}ms)\n`),
+        c(C.green, `ok`) +
+          c(C.gray, ` (${pct(score.fieldAccuracy)} fields, ${dt}ms)\n`),
       );
     }
   }

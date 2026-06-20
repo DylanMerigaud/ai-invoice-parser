@@ -39,8 +39,12 @@ async function hasPdftoppm(): Promise<boolean> {
 async function renderPreview(id: string, pdfPath: string): Promise<void> {
   await execFileP("pdftoppm", [
     "-png",
-    "-r", "70",
-    "-f", "1", "-l", "1",
+    "-r",
+    "70",
+    "-f",
+    "1",
+    "-l",
+    "1",
     "-singlefile",
     pdfPath,
     join(PREVIEWS_DIR, id),
@@ -101,7 +105,8 @@ async function main() {
 
   console.log(`\nWrote PDFs + ground truth to eval/samples/`);
   console.log(`Copied landing subset to public/samples/`);
-  if (canPreview) console.log(`Rendered preview thumbnails to public/samples/previews/`);
+  if (canPreview)
+    console.log(`Rendered preview thumbnails to public/samples/previews/`);
 }
 
 main().catch((err) => {

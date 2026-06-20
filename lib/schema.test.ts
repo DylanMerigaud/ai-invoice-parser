@@ -64,8 +64,14 @@ test("rejects a non-3-letter currency", () => {
 });
 
 test("rejects a non-ISO or impossible date", () => {
-  assert.equal(InvoiceSchema.safeParse({ ...valid(), issueDate: "03/01/2024" }).success, false);
-  assert.equal(InvoiceSchema.safeParse({ ...valid(), issueDate: "2024-13-40" }).success, false);
+  assert.equal(
+    InvoiceSchema.safeParse({ ...valid(), issueDate: "03/01/2024" }).success,
+    false,
+  );
+  assert.equal(
+    InvoiceSchema.safeParse({ ...valid(), issueDate: "2024-13-40" }).success,
+    false,
+  );
 });
 
 test("rejects a string where a number is expected", () => {
@@ -74,12 +80,21 @@ test("rejects a string where a number is expected", () => {
 });
 
 test("rejects non-finite amounts (NaN / Infinity)", () => {
-  assert.equal(InvoiceSchema.safeParse({ ...valid(), total: Number.NaN }).success, false);
-  assert.equal(InvoiceSchema.safeParse({ ...valid(), subtotal: Infinity }).success, false);
+  assert.equal(
+    InvoiceSchema.safeParse({ ...valid(), total: Number.NaN }).success,
+    false,
+  );
+  assert.equal(
+    InvoiceSchema.safeParse({ ...valid(), subtotal: Infinity }).success,
+    false,
+  );
 });
 
 test("requires at least one line item", () => {
-  assert.equal(InvoiceSchema.safeParse({ ...valid(), lineItems: [] }).success, false);
+  assert.equal(
+    InvoiceSchema.safeParse({ ...valid(), lineItems: [] }).success,
+    false,
+  );
 });
 
 test("rejects a line item missing a field", () => {

@@ -23,114 +23,124 @@ export default function OpengraphImage() {
   const flow = ["PDF invoice", "Claude", "Validated JSON", "Anomaly flags"];
 
   return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          background: "#FAFAFA",
-          padding: "72px 80px",
-          fontFamily: "sans-serif",
-        }}
-      >
-        {/* Top: wordmark + a small accent tag */}
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div
-            style={{
-              width: 18,
-              height: 18,
-              borderRadius: 5,
-              background: ACCENT,
-            }}
-          />
-          <div style={{ fontSize: 30, fontWeight: 700, color: INK, letterSpacing: -0.5 }}>
-            AI Invoice Parser
-          </div>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        background: "#FAFAFA",
+        padding: "72px 80px",
+        fontFamily: "sans-serif",
+      }}
+    >
+      {/* Top: wordmark + a small accent tag */}
+      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div
+          style={{
+            width: 18,
+            height: 18,
+            borderRadius: 5,
+            background: ACCENT,
+          }}
+        />
+        <div
+          style={{
+            fontSize: 30,
+            fontWeight: 700,
+            color: INK,
+            letterSpacing: -0.5,
+          }}
+        >
+          AI Invoice Parser
         </div>
+      </div>
 
-        {/* Middle: headline + subline */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+      {/* Middle: headline + subline */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+        <div
+          style={{
+            fontSize: 60,
+            fontWeight: 700,
+            color: INK,
+            lineHeight: 1.08,
+            letterSpacing: -1.5,
+            maxWidth: 980,
+          }}
+        >
+          Any invoice PDF, into structured data.
+        </div>
+        <div
+          style={{ fontSize: 27, color: MUTED, lineHeight: 1.4, maxWidth: 940 }}
+        >
+          Drop a PDF → schema-validated structured data plus automated anomaly
+          flags. Claude reads the document directly — every result is validated
+          with Zod before you see it.
+        </div>
+      </div>
+
+      {/* Pipeline flow */}
+      <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        {flow.map((label, i) => (
           <div
-            style={{
-              fontSize: 60,
-              fontWeight: 700,
-              color: INK,
-              lineHeight: 1.08,
-              letterSpacing: -1.5,
-              maxWidth: 980,
-            }}
+            key={label}
+            style={{ display: "flex", alignItems: "center", gap: 14 }}
           >
-            Any invoice PDF, into structured data.
-          </div>
-          <div style={{ fontSize: 27, color: MUTED, lineHeight: 1.4, maxWidth: 940 }}>
-            Drop a PDF → schema-validated structured data plus automated anomaly
-            flags. Claude reads the document directly — every result is validated
-            with Zod before you see it.
-          </div>
-        </div>
-
-        {/* Pipeline flow */}
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          {flow.map((label, i) => (
-            <div key={label} style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                background: "#FFFFFF",
+                border: `1px solid ${LINE}`,
+                borderRadius: 999,
+                padding: "12px 22px",
+                fontSize: 24,
+                color: INK,
+              }}
+            >
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 12,
-                  background: "#FFFFFF",
-                  border: `1px solid ${LINE}`,
+                  justifyContent: "center",
+                  width: 26,
+                  height: 26,
                   borderRadius: 999,
-                  padding: "12px 22px",
-                  fontSize: 24,
-                  color: INK,
+                  background: ACCENT_SOFT,
+                  color: ACCENT,
+                  fontSize: 15,
+                  fontWeight: 700,
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: 26,
-                    height: 26,
-                    borderRadius: 999,
-                    background: ACCENT_SOFT,
-                    color: ACCENT,
-                    fontSize: 15,
-                    fontWeight: 700,
-                  }}
-                >
-                  {i + 1}
-                </div>
-                {label}
+                {i + 1}
               </div>
-              {i < flow.length - 1 && (
-                <div style={{ fontSize: 26, color: LINE }}>→</div>
-              )}
+              {label}
             </div>
-          ))}
-        </div>
-
-        {/* Footer: stack + author */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            fontSize: 22,
-            color: MUTED,
-            borderTop: `1px solid ${LINE}`,
-            paddingTop: 28,
-          }}
-        >
-          <div>Next.js · TypeScript · Claude Sonnet 4.6</div>
-          <div style={{ color: INK }}>Dylan Mérigaud</div>
-        </div>
+            {i < flow.length - 1 && (
+              <div style={{ fontSize: 26, color: LINE }}>→</div>
+            )}
+          </div>
+        ))}
       </div>
-    ),
+
+      {/* Footer: stack + author */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          fontSize: 22,
+          color: MUTED,
+          borderTop: `1px solid ${LINE}`,
+          paddingTop: 28,
+        }}
+      >
+        <div>Next.js · TypeScript · Claude Sonnet 4.6</div>
+        <div style={{ color: INK }}>Dylan Mérigaud</div>
+      </div>
+    </div>,
     { ...size },
   );
 }

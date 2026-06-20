@@ -1,0 +1,8 @@
+# Generated / vendored
+node_modules
+.next
+pnpm-lock.yaml
+eval/results.json
+
+# Markdown is hand-formatted (tables, badges, the demo GIF) — leave it alone.
+*.md

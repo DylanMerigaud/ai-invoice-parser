@@ -17,7 +17,8 @@ export function ErrorPanel({
   error: ParseError;
   onReset: () => void;
 }) {
-  const isValidation = error.code === "validation_failed" && error.issues?.length;
+  const isValidation =
+    error.code === "validation_failed" && error.issues?.length;
 
   return (
     <div className="flex flex-col gap-4">
@@ -35,7 +36,8 @@ export function ErrorPanel({
             {error.code === "rate_limited" &&
               error.retryAfterSeconds != null && (
                 <p className="mt-2 text-xs text-muted">
-                  Retry available in ~{Math.max(1, Math.ceil(error.retryAfterSeconds / 60))}{" "}
+                  Retry available in ~
+                  {Math.max(1, Math.ceil(error.retryAfterSeconds / 60))}{" "}
                   minute(s).
                 </p>
               )}
